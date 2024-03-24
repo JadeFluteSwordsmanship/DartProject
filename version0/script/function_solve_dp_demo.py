@@ -38,10 +38,10 @@ def solve_dp_noturn_demo1(aiming_grid, prob_grid_normalscore, prob_grid_doublesc
             ## transit to less score state    
             ## s1 = min(score_state-2, 60)
             ## p[z=1]*v[score_state-1] + p[z=2]*v[score_state-2] + ... + p[z=s1]*v[score_state-s1]
-            # ÕâÀïµÄÂß¼­ÊÇ£¬ÆÚÍû´ÎÊý=1+Í¶µ½i²»±¬µÄ¸ÅÂÊ*ÔÚ×´Ì¬iÏÂÆÚÍû´ÎÊý+Í¶µ½±¬µÄ¸ÅÂÊ*£¨±¬ÁËËùÒÔ»Ø¹éÔ­À´£¬»¹ÊÇÆÚÍû´ÎÊý£©
+            # ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß¼ï¿½ï¿½Ç£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½=1+Í¶ï¿½ï¿½iï¿½ï¿½ï¿½ï¿½ï¿½Ä¸ï¿½ï¿½ï¿½*ï¿½ï¿½×´Ì¬iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½+Í¶ï¿½ï¿½ï¿½ï¿½ï¿½Ä¸ï¿½ï¿½ï¿½*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô»Ø¹ï¿½Ô­ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             # Ex_throws = 1 + np.dot(prob*optimal_val) + prob_busted * Ex_throws
             # Ex_throws*(1-prob_busted) = 1 + np.dot(prob*optimal_val) = num_tothrow
-            # ¡à prob_notbust = num_tothrow / Ex_throws
+            # ï¿½ï¿½ prob_notbust = num_tothrow / Ex_throws
             # tempvalue[target_i] = num_tothrow / prob_notbust
             num_tothrow = 1.0 + np.dot(prob_grid_normalscore[target_i,1:score_max_plus1], optimal_value[score_state-1:score_state-score_max-1:-1])
             prob_notbust = prob_grid_normalscore[target_i,1:score_max_plus1].sum()

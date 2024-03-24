@@ -501,7 +501,7 @@ def plot_dartboard(points_input=None, point_marker='x', text_input=None, flag_in
     #ax.axis('off')
             
     plt.axis('square')
-    plt.show()
+    # plt.show()
     
     return ax
 
