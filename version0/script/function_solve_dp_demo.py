@@ -30,14 +30,14 @@ def solve_dp_noturn_demo1(aiming_grid, prob_grid_normalscore, prob_grid_doublesc
         
     ## solve successively for s = 2,...,501
     for score_state in range(2,502):
+        score_max = min(score_state - 2, 60)
+        score_max_plus1 = score_max + 1
         ## compute each aiming location
         for target_i in range(num_aiming_location):
         
             ## transit to less score state    
             ## s1 = min(score_state-2, 60)
             ## p[z=1]*v[score_state-1] + p[z=2]*v[score_state-2] + ... + p[z=s1]*v[score_state-s1]
-            score_max = min(score_state-2, 60)
-            score_max_plus1 = score_max + 1 
             # 这里的逻辑是，期望次数=1+投到i不爆的概率*在状态i下期望次数+投到爆的概率*（爆了所以回归原来，还是期望次数）
             # Ex_throws = 1 + np.dot(prob*optimal_val) + prob_busted * Ex_throws
             # Ex_throws*(1-prob_busted) = 1 + np.dot(prob*optimal_val) = num_tothrow
