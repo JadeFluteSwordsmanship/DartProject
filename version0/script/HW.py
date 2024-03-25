@@ -11,19 +11,22 @@ import function_tool as ft
 import function_get_aiming_grid
 from function_solve_dp_withturn import solve_dp_withturn_valueiteration, setup_logging, log_system_info
 
-#  python HW.py --playerID_list 7 11 12 --iter_error=0.00001 --iter_limit=5000
+#  python HW.py --playerID_list 7 11 12 --iter_error=0.00001 --iter_limit=5000 --method='policy'
 np.set_printoptions(precision=4)
 np.set_printoptions(linewidth=300)
 np.set_printoptions(threshold=300)
 parser = argparse.ArgumentParser(description='Run value iteration for given player IDs.')
 parser.add_argument('--playerID_list', nargs='+', type=int, help='List of player IDs', required=True)
 parser.add_argument('--iter_limit', type=int, help='Iteration limit for the value iteration algorithm', default=1000)
-parser.add_argument('--iter_error', type=float, help='Error threshold for the value iteration algorithm', default=0.0001)
+parser.add_argument('--iter_error', type=float, help='Error threshold for the value iteration algorithm',
+                    default=0.0001)
+parser.add_argument('--method', type=str, help='algorithm type', choices=['value', 'policy'], required=True)
 
 args = parser.parse_args()
 iter_limit = args.iter_limit
 iter_error = args.iter_error
 playerID_list = args.playerID_list
+method = args.method
 
 result_dir = '../HW_result'
 if not os.path.isdir(result_dir):
@@ -39,7 +42,8 @@ for playerID in playerID_list:
     t1 = time.time()
     V, optimal_action_index = solve_dp_withturn_valueiteration(aiming_grid, prob_grid_normalscore,
                                                                prob_grid_doublescore,
-                                                               prob_grid_bullscore,iter_limit=iter_limit, iter_error=iter_error,logger=logger)
+                                                               prob_grid_bullscore, iter_limit=iter_limit,
+                                                               iter_error=iter_error, logger=logger)
     t2 = time.time()
 
     print(f'\nsolve dp_withturn in {t2 - t1} seconds for player{playerID}')
