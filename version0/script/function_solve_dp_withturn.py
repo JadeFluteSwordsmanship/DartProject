@@ -53,7 +53,7 @@ def solve_dp_withturn_valueiteration(aiming_grid, prob_grid_normalscore, prob_gr
     prob_doublescore_dic[fb.score_DB] = np.array(prob_grid_bullscore[:, 1])
     prob_bust_array = np.ones((502, 121, num_aiming_location), dtype=np.float32)
     for s in range(2, 502):
-        for u in range(0, min(s - 2, 60) + 1):
+        for u in range(0, min(s - 2, 120) + 1):
             score_max = min(s - u - 2, 60)
             prob_bust = 1 - prob_normalscore_0tosmaxsum_dic[score_max] - \
                         prob_doublescore_dic.get(s - u, np.zeros(num_aiming_location))
@@ -157,7 +157,7 @@ def solve_dp_withturn_policyiteration(aiming_grid, prob_grid_normalscore, prob_g
 
     prob_bust_array = np.ones((502, 121, num_aiming_location), dtype=np.float32)
     for s in range(2, 502):
-        for u in range(0, min(s - 2, 60) + 1):
+        for u in range(0, min(s - 2, 120) + 1):
             score_max = min(s - u - 2, 60)
             prob_bust = 1 - prob_normalscore_0tosmaxsum_dic[score_max] - \
                         prob_doublescore_dic.get(s - u, np.zeros(num_aiming_location))
@@ -169,7 +169,7 @@ def solve_dp_withturn_policyiteration(aiming_grid, prob_grid_normalscore, prob_g
     V[0, :, 0] = 0  # If the score is 0, the game is finished
     V[1, :, 0] = np.inf
     optimal_action_index[0:2, :, 0] = -999
-
+    Mu = np.full((502, 4, 121), fill_value=41, dtype=np.int16)
     for s in range(2, 502):
         start_time = time.time()
         values_old = {3: np.ones(min(s - 2, 60 * 0) + 1, dtype=np.float32),
@@ -180,9 +180,8 @@ def solve_dp_withturn_policyiteration(aiming_grid, prob_grid_normalscore, prob_g
                   1: np.ones(min(s - 2, 60 * 2) + 1, dtype=np.float32)}
         # values_old = np.ones((4, min(s - 2, 60 * 2) + 1))
         # values = np.ones((4, min(s - 2, 60 * 2) + 1))
-        Mu = np.full((502, 4, 121), fill_value=41, dtype=np.int16)
         iter_cnt = 0
-        while (np.all(Mu[s, 3, 0] == optimal_action_index[s, 2, 0])
+        while not (np.all(Mu[s, 3, 0] == optimal_action_index[s, 2, 0])
                and np.all(Mu[s, 2, 0:min(s - 2, 60) + 1] == optimal_action_index[s, 1, 0:min(s - 2, 60) + 1])
                and np.all(Mu[s, 1, 0:min(s - 2, 120) + 1] == optimal_action_index[s, 0, 0:min(s - 2, 120) + 1])
         ):
@@ -197,38 +196,38 @@ def solve_dp_withturn_policyiteration(aiming_grid, prob_grid_normalscore, prob_g
                 for u in [0]:
                     score_max = min(s - 2, 60)
                     turn_to_thrownew = (
-                            prob_normalscore_0tosmax_dic.get(score_max)[Mu(s, i, u)].dot(values[2][u:u + score_max + 1])
-                            + prob_doublescore_dic.get(s, np.zeros(num_aiming_location, ))[Mu(s, i, u)] * 1
-                            + prob_bust_array[s, u, Mu(s, i, u)] * (1 + values[3][0]))
+                            prob_normalscore_0tosmax_dic.get(score_max)[Mu[s, i, u]].dot(values[2][u:u + score_max + 1])
+                            + prob_doublescore_dic.get(s, np.zeros(num_aiming_location, ))[Mu[s, i, u]] * 1
+                            + prob_bust_array[s, u, Mu[s, i, u]] * (1 + values[3][0]))
                     values[3][u] = turn_to_thrownew
                 i = 2
                 for u in range(0, min(s - 2, 60) + 1):
                     score_max = min(s - u - 2, 60)
                     turn_to_thrownew = (
-                            prob_normalscore_0tosmax_dic.get(score_max)[Mu(s, i, u)].dot(values[1][u:u + score_max + 1])
-                            + prob_doublescore_dic.get(s - u, np.zeros(num_aiming_location, ))[Mu(s, i, u)] * 1
-                            + prob_bust_array[s, u, Mu(s, i, u)] * (1 + values[3][0])
+                            prob_normalscore_0tosmax_dic.get(score_max)[Mu[s, i, u]].dot(values[1][u:u + score_max + 1])
+                            + prob_doublescore_dic.get(s - u, np.zeros(num_aiming_location, ))[Mu[s, i, u]] * 1
+                            + prob_bust_array[s, u, Mu[s, i, u]] * (1 + values[3][0])
                     )
                     values[2][u] = turn_to_thrownew
                 i = 1
                 for u in range(1, min(s - 2, 120) + 1):
                     score_max = min(s - u - 2, 60)
                     turn_to_thrownew = (
-                            prob_normalscore_0tosmax_dic.get(score_max)[Mu(s, i, u)].dot(
+                            prob_normalscore_0tosmax_dic.get(score_max)[Mu[s, i, u]].dot(
                                 1 + V[s - u:s - u - score_max - 1:-1, 2, 0])
-                            + prob_doublescore_dic.get(s - u, np.zeros(num_aiming_location, ))[Mu(s, i, u)] * 1
-                            + prob_bust_array[s, u, Mu(s, i, u)] * (1 + values[3][0])
+                            + prob_doublescore_dic.get(s - u, np.zeros(num_aiming_location, ))[Mu[s, i, u]] * 1
+                            + prob_bust_array[s, u, Mu[s, i, u]] * (1 + values[3][0])
                     )
                     values[1][u] = turn_to_thrownew
 
                 for u in [0]:
                     score_max = min(s - u - 2, 60)
                     turn_to_thrownew = (
-                            prob_grid_normalscore[Mu(s, i, u), 0] * (1 + values[3][0])
-                            + np.array(prob_grid_normalscore[Mu(s, i, u), 1:score_max + 1]).dot(
+                            prob_grid_normalscore[Mu[s, i, u], 0] * (1 + values[3][0])
+                            + np.array(prob_grid_normalscore[Mu[s, i, u], 1:score_max + 1]).dot(
                         1 + V[s - u - 1:s - u - score_max - 1:-1, 2, 0])
-                            + prob_doublescore_dic.get(s - u, np.zeros(num_aiming_location, ))[Mu(s, i, u)] * 1
-                            + prob_bust_array[s, u, Mu(s, i, u)] * (1 + values[3][0])
+                            + prob_doublescore_dic.get(s - u, np.zeros(num_aiming_location, ))[Mu[s, i, u]] * 1
+                            + prob_bust_array[s, u, Mu[s, i, u]] * (1 + values[3][0])
                     )
                     values[1][u] = turn_to_thrownew
 
