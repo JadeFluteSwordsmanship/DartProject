@@ -13,7 +13,7 @@ import function_get_aiming_grid
 from function_solve_dp_withturn import solve_dp_withturn_valueiteration, setup_logging, log_system_info, \
     solve_dp_withturn_policyiteration
 
-#  python HW.py --playerID_list 7 --iter_error=0.0001 --iter_limit=5000 --method='value'
+#  python HW.py --playerID_list 5 --iter_error=0.0001 --iter_limit=5000 --method='policy'
 np.set_printoptions(precision=4)
 np.set_printoptions(linewidth=300)
 np.set_printoptions(threshold=300)
